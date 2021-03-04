@@ -250,11 +250,15 @@ public class DefaultObjectsProvider implements FlexiCoreService {
 
 	@Bean
 	@Qualifier("adminSecurityContext")
-	@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+	//@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 	@ConditionalOnMissingBean
 	public SecurityContext adminSecurityContext(DefaultSecurityEntities defaultSecurityEntities) {
-		return new SecurityContext(Collections.singletonList((Tenant) defaultSecurityEntities.getSecurityTenant()), (User) defaultSecurityEntities.getSecurityUser(), null, (Tenant) defaultSecurityEntities.getSecurityTenant())
-				.setRoleMap(Stream.of(defaultSecurityEntities.getRole()).collect(Collectors.groupingBy(f -> f.getTenant().getId())));
+		Tenant securityTenant = (Tenant) defaultSecurityEntities.getSecurityTenant();
+		List<Tenant> tenants = Collections.singletonList(securityTenant);
+		User securityUser = (User) defaultSecurityEntities.getSecurityUser();
+		Map<String, List<Role>> collect = Stream.of(defaultSecurityEntities.getRole()).collect(Collectors.groupingBy(f -> f.getTenant().getId()));
+		return new SecurityContext(tenants, securityUser, null, securityTenant)
+				.setRoleMap(collect);
 
 	}
 
@@ -278,10 +282,10 @@ public class DefaultObjectsProvider implements FlexiCoreService {
 			tenantToUser = userService.createTenantToUserNoMerge(tenantToUserCreate, null);
 			tenantToUser.setCreator(admin);
 			tenantToUser.setId(TENANT_TO_USER_ID);
-			toMerge.add(tenantToUser);
+			tenantToUser=userService.merge(tenantToUser);
 		} else {
 			if (userService.updateTenantToUserNoMerge(tenantToUserCreate, tenantToUser)) {
-				toMerge.add(tenantToUser);
+				tenantToUser=userService.merge(tenantToUser);
 				logger.debug("Updated Tenant To User");
 			}
 		}
@@ -295,23 +299,23 @@ public class DefaultObjectsProvider implements FlexiCoreService {
 			superAdminRole = roleService.createRoleNoMerge(roleCreate, null);
 			superAdminRole.setCreator(admin);
 			superAdminRole.setId(SUPER_ADMIN_ROLE_ID);
-			toMerge.add(superAdminRole);
+			superAdminRole=roleService.merge(superAdminRole);
 		}
 		RoleToUserCreate roleToUserCreate = new RoleToUserCreate().setRole(superAdminRole).setUser(admin).setTenant(defaultTenant);
 		RoleToUser roleToUser = baselinkrepository.findByIdOrNull(RoleToUser.class, SUPER_ADMIN_TO_ADMIN_ID);
 		if (roleToUser == null) {
 			logger.debug("Creating Role To User Link");
 			roleToUser = userService.createRoleToUserNoMerge(roleToUserCreate, null);
+			roleToUser.setTenant(defaultTenant);
 			roleToUser.setCreator(admin);
 			roleToUser.setId(SUPER_ADMIN_TO_ADMIN_ID);
-			toMerge.add(roleToUser);
+			roleToUser=userService.merge(roleToUser);
 		} else {
 			if (userService.updateRoleToUserNoMerge(roleToUserCreate, roleToUser)) {
-				toMerge.add(roleToUser);
+				roleToUser=userService.merge(roleToUser);
 				logger.debug("Updated Role To User Link");
 			}
 		}
-		baselinkrepository.massMerge(toMerge);
 		return new DefaultSecurityEntities(admin, defaultTenant, superAdminRole, tenantToUser, roleToUser);
 
 	}
@@ -420,10 +424,10 @@ public class DefaultObjectsProvider implements FlexiCoreService {
 			defaultTenant = tenantService.createTenantNoMerge(tenantCreate, null);
 			defaultTenant.setId(DEFAULT_TENANT_ID);
 			defaultTenant.setTenant(defaultTenant);
-			toMerge.add(defaultTenant);
+			defaultTenant=tenantService.merge(defaultTenant);
 		} else {
 			if (defaultTenant.getTenant() == null) {
-				defaultTenant.setTenant(defaultTenant);
+				defaultTenant=tenantService.merge(defaultTenant);
 				tenantUpdated = true;
 			}
 		}
@@ -444,10 +448,10 @@ public class DefaultObjectsProvider implements FlexiCoreService {
 			admin = userService.createUserNoMerge(userCreate, null);
 			admin.setCreator(admin);
 			admin.setId(systemAdminId);
-			toMerge.add(admin);
+			admin=userService.merge(admin);
 		} else {
 			if (admin.getCreator() == null) {
-				admin.setCreator(admin);
+				admin=userService.merge(admin);
 				toMerge.add(admin);
 			}
 		}
@@ -457,7 +461,11 @@ public class DefaultObjectsProvider implements FlexiCoreService {
 			tenantUpdated = true;
 		}
 		if (tenantUpdated) {
-			toMerge.add(defaultTenant);
+			defaultTenant=tenantService.merge(defaultTenant);
+		}
+		if(admin.getTenant()==null){
+			admin.setTenant(defaultTenant);
+			admin=userService.merge(admin);
 		}
 		return new TenantAndUserInit(admin, defaultTenant);
 	}

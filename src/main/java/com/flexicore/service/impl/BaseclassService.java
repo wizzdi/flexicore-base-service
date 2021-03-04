@@ -551,8 +551,8 @@ public class BaseclassService implements com.flexicore.service.BaseclassService 
 
 
     @Override
-    public void merge(Object base) {
-        baseclassRepository.merge(base);
+    public <T> T merge(T base) {
+        return baseclassRepository.merge(base);
     }
 
     @Override
@@ -569,11 +569,10 @@ public class BaseclassService implements com.flexicore.service.BaseclassService 
         for (Baseclass baseclass : setBaseclassTenantRequest.getBaseclasses()) {
             if (baseclass.getTenant() == null || !baseclass.getTenant().getId().equals(targetTenant.getId())) {
                 baseclass.setTenant(targetTenant);
-                toMerge.add(baseclass);
+                baseclass=baseclassRepository.merge(baseclass);
 
             }
         }
-        baseclassRepository.massMerge(toMerge);
         return toMerge.size();
     }
 

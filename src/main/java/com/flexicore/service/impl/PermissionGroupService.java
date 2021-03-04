@@ -76,7 +76,7 @@ public class PermissionGroupService implements com.flexicore.service.PermissionG
                     PermissionGroupToBaseclass permissionGroupToBaseclass = new PermissionGroupToBaseclass("PermissionGroupLink", securityContext);
                     permissionGroupToBaseclass.setPermissionGroup(permissionGroup);
                     permissionGroupToBaseclass.setRightside(baseclass);
-                    toMerge.add(permissionGroupToBaseclass);
+                    permissionGroupToBaseclass=permissionGroupRepository.merge(permissionGroupToBaseclass);
                     entry.put(permissionGroup.getId(), permissionGroupToBaseclass);
                     existingPermissionGroupsLinks.add(permissionGroupToBaseclass);
                 }
@@ -152,8 +152,8 @@ public class PermissionGroupService implements com.flexicore.service.PermissionG
 
     @Override
     @Transactional
-    public void merge(Object base) {
-        permissionGroupRepository.merge(base);
+    public <T> T merge(T base) {
+        return permissionGroupRepository.merge(base);
     }
 
     @Override

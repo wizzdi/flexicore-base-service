@@ -61,9 +61,9 @@ public interface BaseclassRepository extends PluginRepository {
     List<Field> getAllComplexFields(Class<?> c);
 
     @Transactional
-    void merge(Object base);
+    <T> T merge(T base);
     @Transactional
-    void merge(Object base,boolean updateUpdateDate);
+    <T> T merge(T base,boolean updateUpdateDate);
 
     void remove(Object o);
 

@@ -141,7 +141,7 @@ public interface BaseclassService extends FlexiCoreService {
 
     <T extends Baseclass> List<T> getAllUnsecure(Class<T> c);
 
-    void merge(Object base);
+    <T> T merge(T base);
 
     void softDelete(Baseclass baseclass, SecurityContext securityContext);
 

@@ -159,8 +159,8 @@ public class DynamicInvokersService implements ServicePlugin {
         DynamicExecution dynamicExecution = updateDynamicExecution.getDynamicExecution();
         List<Object> toMerge = new ArrayList<>();
         if (dynamicExecutionService.updateDynamicExecutionNoMerge(updateDynamicExecution,toMerge, dynamicExecution )) {
-            toMerge.add(dynamicExecution);
-            dynamicExecutionService.massMerge(toMerge);
+            //TODO: update merge
+            dynamicExecutionService.merge(dynamicExecution);
         }
         return dynamicExecution;
     }

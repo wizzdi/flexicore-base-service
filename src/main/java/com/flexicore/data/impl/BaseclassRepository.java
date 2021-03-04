@@ -299,7 +299,7 @@ public class BaseclassRepository implements com.flexicore.data.BaseclassReposito
 
     @Override
     @Transactional
-    public void merge(Object base,boolean updateDate) {
+    public <T> T merge(T base,boolean updateDate) {
         Baseclass base1=null;
         boolean created=false;
         if(base instanceof Baseclass){
@@ -327,6 +327,7 @@ public class BaseclassRepository implements com.flexicore.data.BaseclassReposito
 
             }
         }
+        return base;
 
     }
 
@@ -1212,8 +1213,8 @@ public class BaseclassRepository implements com.flexicore.data.BaseclassReposito
 
     @Override
     @Transactional
-    public void merge(Object base) {
-        merge(base,true);
+    public <T> T merge(T base) {
+       return merge(base,true);
     }
 
     @Override

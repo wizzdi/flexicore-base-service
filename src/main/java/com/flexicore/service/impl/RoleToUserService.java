@@ -83,8 +83,8 @@ public class RoleToUserService implements com.flexicore.service.RoleToUserServic
     }
 
     @Override
-    public void merge(Object base) {
-        roleToUserRepository.merge(base);
+    public <T> T merge(T base) {
+        return roleToUserRepository.merge(base);
     }
 
 

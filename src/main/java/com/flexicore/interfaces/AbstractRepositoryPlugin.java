@@ -92,8 +92,8 @@ public abstract class AbstractRepositoryPlugin implements PluginRepository, Exte
     }
 
     @Transactional
-    public void merge(Object base) {
-        baseclassRepository.merge(base);
+    public <T> T merge(T base) {
+        return baseclassRepository.merge(base);
     }
 
     public void remove(Object o) {

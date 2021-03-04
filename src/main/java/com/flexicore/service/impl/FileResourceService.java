@@ -626,11 +626,10 @@ public class FileResourceService implements com.flexicore.service.FileResourceSe
             zipFile.setFullPath(zip.getAbsolutePath());
             zipFile.setMd5(generateMD5(zip));
             zipFile.setOffset(zip.length());
-            toMerge.add(zipFile);
-            List<ZipFileToFileResource> links = zipAndDownload.getFileResources().parallelStream().map(f -> createZipFileToFileResourceNoMerge(zipFile, f, securityContext)).collect(Collectors.toList());
-            toMerge.addAll(links);
-            fileResourceRepository.massMerge(toMerge);
-            existing = zipFile;
+            zipFile=fileResourceRepository.merge(zipFile);
+            ZipFile zipFileFinal=zipFile;
+            List<ZipFileToFileResource> links = zipAndDownload.getFileResources().parallelStream().map(f -> createZipFileToFileResource(zipFileFinal, f, securityContext)).collect(Collectors.toList());
+            existing = zipFileFinal;
 
         }
         return existing;
@@ -648,6 +647,11 @@ public class FileResourceService implements com.flexicore.service.FileResourceSe
             }
         }
         return null;
+    }
+
+    private ZipFileToFileResource createZipFileToFileResource(ZipFile zipFile, FileResource f, SecurityContext securityContext) {
+        ZipFileToFileResource zipFileToFileResource =createZipFileToFileResourceNoMerge(zipFile,f,securityContext);
+        return fileResourceRepository.merge(zipFileToFileResource);
     }
 
     private ZipFileToFileResource createZipFileToFileResourceNoMerge(ZipFile zipFile, FileResource f, SecurityContext securityContext) {

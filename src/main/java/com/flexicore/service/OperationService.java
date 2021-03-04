@@ -32,7 +32,7 @@ public interface OperationService extends FlexiCoreService {
     <T extends Baseclass> T getByIdOrNull(String id, Class<T> c, List<String> batchString, SecurityContext securityContext);
 
     @Transactional
-    void merge(Object o);
+    <T> T merge(T o);
 
     boolean tennantAllowed(Operation operation, Tenant tenant);
 

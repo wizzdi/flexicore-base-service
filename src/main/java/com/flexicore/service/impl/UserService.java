@@ -64,6 +64,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
@@ -213,11 +214,10 @@ public class UserService implements com.flexicore.service.UserService {
         List<Object> toMerge = new ArrayList<>();
         Tenant tenant = (Tenant) userCreate.getTenant();
         User user = createUserNoMerge(userCreate, securityContext);
-        toMerge.add(user);
+        user=securityUserService.merge(user);
         TenantToUserCreate tenantToUserCreate = new TenantToUserCreate().setDefaultTenant(true).setUser(user).setTenant(tenant);
         TenantToUser tenantToUser = createTenantToUserNoMerge(tenantToUserCreate, securityContext);
-        toMerge.add(tenantToUser);
-        userrepository.massMerge(toMerge);
+        tenantToUser=securityUserService.merge(tenantToUser);
         user.getTenantToUsers().add(tenantToUser);
         return user;
     }
@@ -900,5 +900,10 @@ public class UserService implements com.flexicore.service.UserService {
             tenantRepository.merge(tenantToUser);
         }
         return tenantToUser;
+    }
+
+    @Transactional
+    public <T> T merge(T base) {
+        return userrepository.merge(base);
     }
 }

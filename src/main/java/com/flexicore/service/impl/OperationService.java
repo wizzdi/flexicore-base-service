@@ -82,8 +82,8 @@ public class OperationService implements com.flexicore.service.OperationService 
 
 	@Override
 	@Transactional
-	public void merge(Object o) {
-		operationRepository.merge(o);
+	public <T> T merge(T o) {
+		return operationRepository.merge(o);
 	}
 
 
@@ -267,13 +267,13 @@ public class OperationService implements com.flexicore.service.OperationService 
 					operationToClazz.setOperation(operation);
 					operationToClazz.setId(linkId);
 					operationToClazz.setSystemObject(true);
-					toMerge.add(operationToClazz);
+				operationToClazz=operationRepository.merge(operationToClazz);
 					existingMap.put(linkId,operationToClazz);
 
 			}
 			if(!operationToClazz.isSystemObject()){
 				operationToClazz.setSystemObject(true);
-				toMerge.add(operationToClazz);
+				operationToClazz=operationRepository.merge(operationToClazz);
 			}
 
 		}

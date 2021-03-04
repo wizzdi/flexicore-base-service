@@ -43,7 +43,7 @@ public interface RoleService extends FlexiCoreService {
 
     void massMerge(List<?> toMerge);
 
-    void merge(Object base);
+    <T> T merge(T base);
 
     void refrehEntityManager();
 

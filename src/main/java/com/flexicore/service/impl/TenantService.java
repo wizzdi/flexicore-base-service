@@ -139,8 +139,8 @@ public class TenantService implements com.flexicore.service.TenantService {
     }
 
     @Transactional
-    public void merge(Object base) {
-        tenantRepository.merge(base);
+    public <T> T merge(T base) {
+        return tenantRepository.merge(base);
     }
 
 

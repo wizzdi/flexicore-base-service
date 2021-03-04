@@ -303,13 +303,12 @@ public class BaselinkService implements com.flexicore.service.BaselinkService {
 							.setName(createBaselinkRequest.getLinkClass().getSimpleName());
 
                     Baselink baselink = createBaselinkNoMerge(baselinkCreate,securityContext);
-                    toMerge.add(baselink);
+                    baselink=repository.merge(baselink);
                     leftsideMap.put(baselink.getId(), baselink);
                     allBaselinks.add(baselink);
                 }
             }
         }
-        repository.massMerge(toMerge);
         return allBaselinks;
 
     }

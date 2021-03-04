@@ -52,7 +52,7 @@ public interface PermissionGroupService extends FlexiCoreService {
     PermissionGroup createPermissionGroup(CreatePermissionGroupRequest createPermissionGroupRequest, SecurityContext securityContext);
 
     @Transactional
-    void merge(Object base);
+    <T> T merge(T base);
 
     @Transactional
     void massMerge(List<?> toMerge);

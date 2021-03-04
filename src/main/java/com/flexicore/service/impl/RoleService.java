@@ -95,8 +95,8 @@ public class RoleService implements com.flexicore.service.RoleService {
 	}
 
 	@Override
-	public void merge(Object base) {
-		rolerepository.merge(base);
+	public <T> T merge(T base) {
+		return rolerepository.merge(base);
 	}
 
 	@Override

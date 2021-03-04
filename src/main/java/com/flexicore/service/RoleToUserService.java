@@ -34,7 +34,7 @@ public interface RoleToUserService extends FlexiCoreService {
 
     void massMerge(List<?> toMerge);
 
-    void merge(Object base);
+    <T> T merge(T base);
 
     void validate(RoleToUserFilter roleToUserFilter, SecurityContext securityContext);
 
