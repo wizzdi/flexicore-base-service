@@ -23,6 +23,10 @@ public class UserFiltering extends FilteringInformationHolder {
     private String forgotPasswordToken;
     @JsonIgnore
     private String emailVerificationToken;
+    @JsonIgnore
+    private String emailField;
+    @JsonIgnore
+    private String phoneNumberField;
 
 
     @Schema(description = "users with the given mails")
@@ -102,6 +106,26 @@ public class UserFiltering extends FilteringInformationHolder {
 
     public <T extends UserFiltering> T setUserTenants(List<Tenant> userTenants) {
         this.userTenants = userTenants;
+        return (T) this;
+    }
+
+    @JsonIgnore
+    public String getEmailField() {
+        return emailField;
+    }
+
+    public <T extends UserFiltering> T setEmailField(String emailField) {
+        this.emailField = emailField;
+        return (T) this;
+    }
+
+    @JsonIgnore
+    public String getPhoneNumberField() {
+        return phoneNumberField;
+    }
+
+    public <T extends UserFiltering> T setPhoneNumberField(String phoneNumberField) {
+        this.phoneNumberField = phoneNumberField;
         return (T) this;
     }
 }

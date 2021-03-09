@@ -379,13 +379,21 @@ public class UserService implements com.flexicore.service.UserService {
 
     @Override
     public User getUserByMail(String mail) {
-        return userrepository.findByEmail(mail);
+        return getUserByMail(mail,(String)null);
+    }
+
+    public User getUserByMail(String mail,String emailField) {
+        return userrepository.findByEmail(mail,emailField);
     }
 
 
     @Override
     public User getUserByMail(String mail, SecurityContext securityContext) {
-        List<User> users = userrepository.findByEmail(mail, securityContext);
+       return getUserByMail(mail,null,securityContext);
+    }
+
+    public User getUserByMail(String mail,String emailField, SecurityContext securityContext) {
+        List<User> users = userrepository.findByEmail(mail,emailField, securityContext);
         return users.isEmpty() ? null : users.get(0);
     }
 
@@ -496,7 +504,11 @@ public class UserService implements com.flexicore.service.UserService {
 
     @Override
     public User findUserByPhoneNumberOrNull(String phoneNumber, SecurityContext securityContext) {
-        List<User> users = userrepository.findUserByPhoneNumber(phoneNumber, securityContext);
+       return findUserByPhoneNumberOrNull(phoneNumber,null,securityContext);
+    }
+
+    public User findUserByPhoneNumberOrNull(String phoneNumber,String phoneNumberField, SecurityContext securityContext) {
+        List<User> users = userrepository.findUserByPhoneNumber(phoneNumber,phoneNumberField, securityContext);
         return users.isEmpty() ? null : users.get(0);
     }
 
@@ -588,11 +600,15 @@ public class UserService implements com.flexicore.service.UserService {
         if (user.getForgotPasswordTokenValid() == null || OffsetDateTime.now().isAfter(user.getForgotPasswordTokenValid())) {
             throw new BadRequestCustomException("Token has expired", ResetPasswordResponse.TOKEN_EXPIRED);
         }
+        if(resetPasswordWithVerification.getEmailGetter()==null){
+            resetPasswordWithVerification.setEmailGetter(user::getEmail);
+        }
         user.setPassword(hashPassword(resetPasswordWithVerification.getPassword()));
         user.setForgotPasswordTokenValid(null);
         user.setForgotPasswordToken(null);
         userrepository.merge(user);
-        return new ResetPasswordResponse().setEmail(user.getEmail()).setPhoneNumber(user.getEmail());
+        String email = resetPasswordWithVerification.getEmailGetter().get();
+        return new ResetPasswordResponse().setEmail(email).setPhoneNumber(email);
     }
 
     @Override

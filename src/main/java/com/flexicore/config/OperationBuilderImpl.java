@@ -59,7 +59,7 @@ public class OperationBuilderImpl implements OperationBuilder, Plugin {
 							.setClazz(clazz)
 							.setSecurityOperation(securityOperation);
 					existingOperationToClazz = operationToClazzService.createOperationToClazzNoMerge(operationToClazzCreate, securityContextBase);
-					toMerge.add(existingOperationToClazz);
+					toMerge.add(existingOperatfionToClazz);
 					operationClazzes.put(clazzId, existingOperationToClazz);
 				}
 			}
