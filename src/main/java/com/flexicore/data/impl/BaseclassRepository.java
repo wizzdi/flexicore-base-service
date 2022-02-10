@@ -1123,9 +1123,10 @@ public class BaseclassRepository implements com.flexicore.data.BaseclassReposito
         return freeTextSuportMap.computeIfAbsent(aClass.getCanonicalName(),f-> checkFreeTextSupport(aClass));
     }
     private boolean isIncludeMethod(Method f) {
-        if(f==null||f.isAnnotationPresent(Transient.class)){
+        if(f==null||f.isAnnotationPresent(Transient.class)||f.getDeclaringClass().equals(Baseclass.class)&&f.getName().equals("getSearchKey")){
             return false;
         }
+
         FullTextSearchOptions fullTextSearchOptions=f.getAnnotation(FullTextSearchOptions.class);
 
         return fullTextSearchOptions==null||fullTextSearchOptions.include();
