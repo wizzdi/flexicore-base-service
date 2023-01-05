@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.io.FileUtils;
 import org.pf4j.Extension;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +38,7 @@ import java.util.logging.Logger;
 public class TokenService implements com.flexicore.service.TokenService {
 
 
+    private static final org.slf4j.Logger logger= LoggerFactory.getLogger(TokenService.class);
 
 
     @Autowired
@@ -78,13 +80,13 @@ public class TokenService implements com.flexicore.service.TokenService {
     }
 
     @Override
-    public JWTClaims parseClaimsAndVerifyClaims(String jwtToken, Logger logger) {
+    public JWTClaims parseClaimsAndVerifyClaims(String jwtToken, Logger utilLogger) {
         Claims claims =null;
         try {
             claims=Jwts.parser().setSigningKey(cachedJWTSecret).parseClaimsJws(jwtToken).getBody();
         }
         catch (JwtException e){
-            logger.log(Level.SEVERE,"invalid token ",e);
+            logger.error("invalid token ",e);
         }
         return claims!=null&&claims.getIssuer().equals(ISSUER)?new JWTClaimsImpl(claims):null;
 

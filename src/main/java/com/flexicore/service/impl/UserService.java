@@ -297,6 +297,7 @@ public class UserService implements com.flexicore.service.UserService {
             }
             return runningUser;
         }
+        long start=System.currentTimeMillis();
         JWTClaims claims = tokenService.parseClaimsAndVerifyClaims(authenticationKey, utilLogger);
         if (claims != null) {
             String email = claims.getSubject();
@@ -323,6 +324,8 @@ public class UserService implements com.flexicore.service.UserService {
             }
 
             loggedusers.put(authenticationKey, runningUser);
+            log.debug(String.format("token to running user took %d ms",System.currentTimeMillis()-start));
+
             return runningUser;
         }
 
@@ -457,6 +460,7 @@ public class UserService implements com.flexicore.service.UserService {
 
 
     private RunningUser createRunningUser(User user, String jwtKey) {
+        long start=System.currentTimeMillis();
         RunningUser running = new RunningUser(user, jwtKey);
         List<TenantToUser> tenantToUsers = tenantRepository.getAllTenants(user);
         List<RoleToUser> roleToUsers = listAllRoleToUsers(new RoleToUserFilter().setUsers(Collections.singletonList(user)), null);
@@ -469,7 +473,7 @@ public class UserService implements com.flexicore.service.UserService {
         running.setLoggedin(true);
         List<SecurityPolicy> securityPolicies = securityPolicyService.listAllSecurityPolicies(new PasswordSecurityPolicyFilter().setStartTime(OffsetDateTime.now()).setEnabled(true).setSecurityTenants(tenants.stream().map(f -> (SecurityTenant) f).collect(Collectors.toList())).setRoles(allRoles).setIncludeNoRole(true), null);
         running.setSecurityPolicies(securityPolicies);
-
+        log.debug(String.format("creating running user took %d ms",System.currentTimeMillis()-start));
         return running;
     }
 
