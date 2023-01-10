@@ -9,7 +9,7 @@ public class ExportDynamicInvoker extends ExecuteInvokerRequest {
 
 
 
-    private CSVFormat csvFormat;
+    private CSVFormatTypes csvFormat;
     private Map<String, FieldProperties> fieldProperties;
 
     public Map<String, FieldProperties> getFieldProperties() {
@@ -21,11 +21,11 @@ public class ExportDynamicInvoker extends ExecuteInvokerRequest {
         return (T) this;
     }
 
-    public CSVFormat getCsvFormat() {
+    public CSVFormatTypes getCsvFormat() {
         return csvFormat;
     }
 
-    public <T extends ExportDynamicInvoker> T setCsvFormat(CSVFormat csvFormat) {
+    public <T extends ExportDynamicInvoker> T setCsvFormat(CSVFormatTypes csvFormat) {
         this.csvFormat = csvFormat;
         return (T) this;
     }

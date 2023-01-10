@@ -220,7 +220,7 @@ public class DynamicInvokersService implements ServicePlugin {
     public FileResource exportDynamicInvokerToCSV(ExportDynamicInvoker exportDynamicExecution, SecurityContext securityContext) {
         ExecuteInvokersResponse executeInvokersResponse = executeInvoker(exportDynamicExecution, securityContext);
         Map<String, FieldProperties> fieldToName = exportDynamicExecution.getFieldProperties();
-        CSVFormat csvFormat = exportDynamicExecution.getCsvFormat();
+        CSVFormat csvFormat = exportDynamicExecution.getCsvFormat().getCsvFormat();
 
         return invokerResponseToCSV(securityContext, executeInvokersResponse, fieldToName, csvFormat);
 
@@ -381,7 +381,7 @@ public class DynamicInvokersService implements ServicePlugin {
             throw new BadRequestException("fieldProperties map must be non null and not empty");
         }
         if (exportDynamicInvoker.getCsvFormat() == null) {
-            exportDynamicInvoker.setCsvFormat(CSVFormat.EXCEL);
+            exportDynamicInvoker.setCsvFormat(CSVFormatTypes.EXCEL);
         }
     }
 
