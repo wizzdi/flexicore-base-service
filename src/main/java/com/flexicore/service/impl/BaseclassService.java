@@ -7,6 +7,7 @@
 package com.flexicore.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flexicore.annotations.Baseclassroot;
 import com.flexicore.data.BaseclassRepository;
@@ -96,7 +97,7 @@ public class BaseclassService implements com.flexicore.service.BaseclassService 
 
     static {
         objectMapper = new ObjectMapper();
-        objectMapper.setConfig(objectMapper.getSerializationConfig().withView(Views.ForSwaggerOnly.class).with());
+        objectMapper.setConfig(objectMapper.getSerializationConfig().withView(Views.ForSwaggerOnly.class).with()).disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
 
 
     }

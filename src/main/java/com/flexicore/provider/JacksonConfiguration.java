@@ -22,6 +22,7 @@ public class JacksonConfiguration implements ServicePlugin {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
         mapper.setConfig(mapper.getSerializationConfig().withView(Views.Unrefined.class));
         mapper.registerModule(new JavaTimeModule());
 
